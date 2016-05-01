@@ -1,0 +1,85 @@
+<%= form_for @order, :html => { :class => "form-horizontal order", multipart:true } do |f| %>
+
+  <% if @order.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @order.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :currency, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :currency, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:currency) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :price, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :price, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:price) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :discount, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :discount, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:discount) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :depozit, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :depozit, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:depozit) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :no, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :no, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:no) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :maxima, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+      <%= f.text_field :maxima, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:maxima) %>
+  </div>
+
+    <div class="form-group">
+      <%= f.label :created_at, :class => 'control-label col-lg-2' %>
+      <div class="col-lg-10">
+        <%= f.text_field :created_at, :class => 'form-control' %>
+      </div>
+      <%=f.error_span(:created_at) %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :maxima, :class => 'control-label col-lg-2' %>
+      <div class="col-lg-10">
+        <%= f.file_field :file, :class => 'form-control' %>
+      </div>
+      <%=f.error_span(:maxima) %>
+    </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                orders_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>
