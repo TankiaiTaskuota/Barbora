@@ -31,7 +31,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
       if @order.save
       #@order.import(params[:order][:file])
-      @order.import_nikogiri(params[:order][:file])
+      @order.self_pdf_import(params[:order][:file])
 
 
         format.html { redirect_to @order, notice: 'Order was successfully created.' }
@@ -48,6 +48,7 @@ class OrdersController < ApplicationController
   def update
     respond_to do |format|
       if @order.update(order_params)
+        @order.self_pdf_import(params[:order][:file])
         format.html { redirect_to @order, notice: 'Order was successfully updated.' }
         format.json { render :show, status: :ok, location: @order }
       else

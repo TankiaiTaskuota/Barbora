@@ -19,22 +19,23 @@ ActiveRecord::Schema.define(version: 20160501122412) do
   create_table "items", force: :cascade do |t|
     t.integer  "product_id"
     t.integer  "order_id"
-    t.decimal  "price",      precision: 30, scale: 10
-    t.decimal  "amount",     precision: 30, scale: 10
-    t.decimal  "full_price", precision: 30, scale: 10
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.decimal  "price",      precision: 8, scale: 4
+    t.decimal  "amount",     precision: 8, scale: 4
+    t.decimal  "full_price", precision: 8, scale: 4
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
   create_table "orders", force: :cascade do |t|
-    t.string   "currency",                             default: "EUR"
-    t.decimal  "price",      precision: 30, scale: 10
-    t.decimal  "discount",   precision: 30, scale: 10
-    t.decimal  "depozit",    precision: 30, scale: 10
+    t.string   "currency",                           default: "EUR"
+    t.decimal  "price",      precision: 8, scale: 4
+    t.decimal  "discount",   precision: 8, scale: 4
+    t.decimal  "depozit",    precision: 8, scale: 4
     t.string   "no"
-    t.decimal  "maxima",     precision: 30, scale: 10
-    t.datetime "created_at",                                           null: false
-    t.datetime "updated_at",                                           null: false
+    t.decimal  "maxima",     precision: 8, scale: 4
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.index ["no"], name: "index_orders_on_no", unique: true, using: :btree
   end
 
   create_table "products", force: :cascade do |t|

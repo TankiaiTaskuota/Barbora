@@ -17,16 +17,57 @@ class Order < ApplicationRecord
     end
   end
 
-  def import_nikogiri(file)
-    html_doc = File.open(file.path) { |f| Nokogiri::HTML(f) }
+  def self_pdf_import(file)
+    Order.self_pdf_import(file.path, self)
+  end
+
+  def Order.self_pdf_import(file_path, order = nil)
+    t=Time.now.to_i
+    files = `pdftohtml -c #{file_path} /tmp/#{t}.html`
+    order = order == nil ? Order.check_file("/tmp/#{t}-1.html") : order
+    puts file_path
+    if files.to_s.include?('Page-2')
+      order.import_nikogiri("/tmp/#{t}-1.html", 1)
+      order.import_nikogiri("/tmp/#{t}-2.html", 2)
+    else
+      order.import_nikogiri("/tmp/#{t}-1.html")
+    end
+
+    `rm -rf /tmp/#{t}*`
+  end
+
+  def Order.check_file(file_path)
+    html_doc = File.open(file_path) { |f| Nokogiri::HTML(f) }
+    ps = html_doc.css('p')
+    ino=''
+    ps.each_with_index { |p, index|
+
+      if p.text.to_s.include?('UŽSAKYMO Nr.')
+        ino=index
+      end
+    }
+    Order.find_or_create_by(no: ps[ino].text.to_s.split('Nr.').last.to_s.strip)
+  end
+
+  def import_nikogiri(file_path, version=1)
+    html_doc = File.open(file_path) { |f| Nokogiri::HTML(f) }
     ps = html_doc.css('p')
 
+    if version == 1
+      iean =44
+      iname=45
+      iqt =47
+      ifprice = 48
+      iprice =49
+    end
+    if version == 2
+      iean =3
+      iname=4
+      iqt =6
+      ifprice = 7
+      iprice =8
+    end
 
-    iean =44
-    iname=45
-    iqt =44
-    ifprice = 45
-    iprice =46
     ean=''
     name= ''
     qt=''
@@ -34,61 +75,100 @@ class Order < ApplicationRecord
     price=''
 
     nexti=0
+    depoz=0
+    stop=0
 
+    l=0
     ps.each_with_index { |p, index|
-      if index == 9
-        self.no = p.text.to_s.split('Nr.').last.to_s
+      if version == 1
+
+        if p.text.to_s.include?('UŽSAKYMO Nr.')
+          self.no = p.text.to_s.split('Nr.').last.to_s.strip
+          self.save
+        end
+        if l == 1
+          self.created_at = p.text.to_s.split('/').first.to_s.delete('DATA')
+          self.save
+          l=0
+        end
+        if p.text.to_s.include?('Prekių pristatymo data ir laikas')
+          l =1
+        end
+      end
+      if version == 2
+        if p.text.to_s.include?('Jums priklauso')
+
+          iean =index+2
+          iname=index+3
+          iqt =index+5
+          ifprice = index+6
+          iprice =index+7
+
+        end
 
       end
-      if index == 10
-        self.created_at = p.text.to_s.split('/').first.to_s
+
+      if depoz == 1
+        if p.text.to_s.include?('Lt')
+          self.depozit=p.text.to_s.delete('Lt').gsub(',', '.').to_d * 0.289620019
+        else
+          self.depozit = p.text.to_s.delete(' €').gsub(',', '.')
+        end
         self.save
+        depoz=0
       end
 
       if nexti == 1
-        self.price = p.text.to_s.delete(' €').gsub(',', '.')
+        if p.text.to_s.include?('Lt')
+          self.price=p.text.to_s.delete('Lt').gsub(',', '.').to_d * 0.289620019
+        else
+          self.price = p.text.to_s.delete(' €').gsub(',', '.')
+        end
+
         self.save
         nexti=0
       end
 
-      if p.text.to_s.include?('Kitos prekės:')
+      if p.text.to_s.include?('EAN Kodas')
 
-        iean =index+13
-        iname=index+14
-        iqt =index+16
-        ifprice = index+17
-        iprice =index+18
+        iean =index+11
+        iname=index+12
+        iqt =index+14
+        ifprice = index+15
+        iprice =index+16
 
       end
       #table +-18
+      if p.text.to_s.include?('Apmokestinama') or p.text.to_s.include?('Pristatymo mokestis') or p.text.to_s.include?('Suma be PVM') or p.text.to_s.include?('SumabePVM')
+        stop =1
+      end
 
-      if nexti == 0
+      if stop == 0
         if iean == index
           i=0
           #numeris
 
           ean=p.text.to_s
-          if ean.to_s.include?(',')
+          if ean.to_s[-1, 1].include?(',')
             iean+=1
             iname+=1
             iqt+=1
             ifprice+=1
             iprice+=1
+            ean+=p.text.to_s
           else
             iean +=7
-            ean+=p.text.to_s
           end
           name= ''
           qt=''
           fprice=''
           price=''
-          logger.debug "ean: #{ean}, index:#{index}, iean:#{iean}"
+          # logger.debug "ean: #{ean}--- index:#{index}--- iean:#{iean}"
         end
         if iname == index
           #numeris
           iname +=7
           name = p.text.to_s
-          logger.debug "name: #{name}, index:#{index}, ianme:#{iname}"
         end
         if iqt == index
           #numeris
@@ -117,14 +197,46 @@ class Order < ApplicationRecord
           else
             item = Product.create(name: name, ean: ean)
           end
-          logger.debug "index:#{index}, name: #{name}, price:#{price}, price:#{price.to_d}"
-          Item.create(order_id: self.id, product_id: item.id, price: price.gsub(',', '.'), amount: qt.gsub(',', '.'), full_price: fprice.gsub(',', '.'), created_at: self.created_at)
+          if price.include?('Lt') or fprice.include?('Lt')
+            price = price.delete('Lt').gsub(',', '.').to_d * 0.289620019
+            fprice = fprice.delete('Lt').gsub(',', '.').to_d * 0.289620019
+          else
+            price = price.gsub(',', '.')
+            fprice = fprice.gsub(',', '.')
+          end
+          puts price
+          puts fprice
+          puts index
+          puts '-------------------'
+          it = Item.where(order_id: self.id, product_id: item.id, price: price, amount: qt.delete('vnt.').delete('kg').gsub(',', '.').to_d, full_price: fprice, created_at: self.created_at).first
+          if !it
+            Item.create(order_id: self.id, product_id: item.id, price: price, amount: qt.delete('vnt.').delete('kg').gsub(',', '.'), full_price: fprice, created_at: self.created_at)
+          end
         end
 
 
       end
-      if p.text.to_s.include?('Bendra suma')
+
+
+      if p.text.to_s.include?('Depozitas')
+        depoz=1
+        stop =1
+      end
+      if p.text.to_s.include?('Bendra suma') or p.text.to_s.include?('SUMA su PVM')
         nexti=1
+        stop =1
+      end
+
+      if p.text.to_s.include?('Su AČIŪ kortele suteikta nuolaida')
+        self.discount = p.text.to_s.delete('Su AČIŪ kortele suteikta nuolaida').delete(' €').gsub(',', '.')
+        self.save
+        stop =1
+      end
+
+      if p.text.to_s.include?('Gauta MAXIMA pinigų už šį pirkinį') and index > 0
+        self.maxima = p.text.to_s.delete('Gauta MAXIMA pinigų už šį pirkinį').delete(' €').gsub(',', '.')
+        self.save
+        stop =1
       end
 
 
