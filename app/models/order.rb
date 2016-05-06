@@ -1,6 +1,15 @@
 class Order < ApplicationRecord
 
   has_many :items, dependent: :destroy
+
+
+  scope :today, -> {where("created_at >= ? AND created_at < ?", Time.now.beginning_of_day, Time.now.end_of_day)}
+  scope :yesterday, -> {where("created_at >= ? AND created_at < ?", Time.now.ago(1.day).beginning_of_day, Time.now.ago(1.day).end_of_day)}
+  scope :this_month, -> {where("created_at >= ? AND created_at < ?", Time.now.beginning_of_month, Time.now.end_of_month)}
+  scope :previous_month, -> {where("created_at >= ? AND created_at < ?", Time.now.ago(1.month).beginning_of_month, Time.now.ago(1.month).end_of_month)}
+  scope :this_year, -> {where("created_at >= ? AND created_at < ?", Time.now.beginning_of_year, Time.now.end_of_year)}
+  scope :previous_year, -> {where("created_at >= ? AND created_at < ?", Time.now.ago(1.year).beginning_of_year, Time.now.ago(1.year).end_of_year)}
+
   require 'csv'
 
   def import(file)
@@ -33,7 +42,7 @@ class Order < ApplicationRecord
       order.import_nikogiri("/tmp/#{t}-1.html")
     end
 
-    `rm -rf /tmp/#{t}*`
+   # `rm -rf /tmp/#{t}*`
   end
 
   def Order.check_file(file_path)
@@ -204,10 +213,10 @@ class Order < ApplicationRecord
             price = price.gsub(',', '.')
             fprice = fprice.gsub(',', '.')
           end
-          puts price
-          puts fprice
-          puts index
-          puts '-------------------'
+         # puts price
+          #puts fprice
+          #puts index
+          #puts '-------------------'
           it = Item.where(order_id: self.id, product_id: item.id, price: price, amount: qt.delete('vnt.').delete('kg').gsub(',', '.').to_d, full_price: fprice, created_at: self.created_at).first
           if !it
             Item.create(order_id: self.id, product_id: item.id, price: price, amount: qt.delete('vnt.').delete('kg').gsub(',', '.'), full_price: fprice, created_at: self.created_at)
@@ -227,7 +236,7 @@ class Order < ApplicationRecord
         stop =1
       end
 
-      if p.text.to_s.include?('Su AČIŪ kortele suteikta nuolaida')
+      if p.text.to_s.include?('Su AČIŪ kortele suteikta nuolaida') and index > 0
         self.discount = p.text.to_s.delete('Su AČIŪ kortele suteikta nuolaida').delete(' €').gsub(',', '.')
         self.save
         stop =1

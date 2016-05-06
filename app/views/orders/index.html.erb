@@ -1,17 +1,22 @@
 <%- model_class = Order -%>
 <div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %> </h1>
+  <h2>Total : <%=@orders.calculate(:sum, :price)%> € | <%=@orders.count%></h2>
+  <h3>This month: <%=@this_month.calculate(:sum, :price)%> € | <%=@this_month.count%></h3>
+  <h3>Previous month: <%=@preveus_month.calculate(:sum, :price)%> € | <%=@preveus_month.count%></h3>
 </div>
+
+
 <table class="table table-striped">
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(:id) %></th>
       <th><%= model_class.human_attribute_name(:currency) %></th>
-      <th><%= model_class.human_attribute_name(:price) %></th>
-      <th><%= model_class.human_attribute_name(:discount) %></th>
-      <th><%= model_class.human_attribute_name(:depozit) %></th>
+      <th><%= model_class.human_attribute_name(:price) %>€</th>
+      <th><%= model_class.human_attribute_name(:discount) %>€</th>
+      <th><%= model_class.human_attribute_name(:depozit) %>€</th>
       <th><%= model_class.human_attribute_name(:no) %></th>
-      <th><%= model_class.human_attribute_name(:maxima) %></th>
+      <th><%= model_class.human_attribute_name(:maxima) %>€</th>
       <th><%= model_class.human_attribute_name(:created_at) %></th>
       <th><%= model_class.human_attribute_name(:items) %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
@@ -40,6 +45,19 @@
         </td>
       </tr>
     <% end %>
+
+    <tr>
+      <th>Total</th>
+      <th></th>
+      <th><%=@orders.calculate(:sum, :price)%> €</th>
+      <th><%=@orders.calculate(:sum, :discount) %>€</th>
+      <th><%=@orders.calculate(:sum, :depozit) %>€</th>
+      <th></th>
+      <th><%=@orders.calculate(:sum, :maxima) %>€</th>
+      <th></th>
+      <th>></th>
+      <th></th>
+    </tr>
   </tbody>
 </table>
 
