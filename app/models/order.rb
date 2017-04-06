@@ -148,7 +148,7 @@ class Order < ApplicationRecord
 
       end
       #table +-18
-      if p.text.to_s.include?('Apmokestinama') or p.text.to_s.include?('Pristatymo mokestis') or p.text.to_s.include?('Suma be PVM') or p.text.to_s.include?('SumabePVM')
+      if p.text.to_s.include?('Apmokestinama') or p.text.to_s.include?('Pristatymo mokestis') or p.text.to_s.include?('Suma be PVM') or p.text.to_s.include?('SumabePVM') or p.text.to_s.include?('Prekes pristačiau:')
         stop =1
       end
 
@@ -238,6 +238,11 @@ class Order < ApplicationRecord
 
       if p.text.to_s.include?('Su AČIŪ kortele suteikta nuolaida') and index > 0
         self.discount = p.text.to_s.delete('Su AČIŪ kortele suteikta nuolaida').delete(' €').gsub(',', '.')
+        self.save
+        stop =1
+      end
+
+      if p.text.to_s.include?('Prekespristačiau:') and index > 0
         self.save
         stop =1
       end

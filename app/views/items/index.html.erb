@@ -22,7 +22,7 @@
     <% @items.each do |item| %>
       <tr>
         <td><%= link_to item.id, item_path(item) %></td>
-        <td><%= item.product.name %></td>
+        <td><%= link_to item.product.name, product_path(item.product) if item.product  %></td>
         <td><%= item.order_id %></td>
         <td><%= item.price %></td>
         <td><%= item.amount %></td>
