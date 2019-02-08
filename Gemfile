@@ -1,12 +1,15 @@
 source 'https://rubygems.org'
 
+gem 'rails'
+
 gem 'coffee-rails'
+gem 'sass-rails'
+
 gem 'jquery-rails'
-gem 'less-rails'
+
 gem 'pg'
 gem 'puma'
-gem 'rails', '5.2.0'
-gem 'sass-rails'
+
 gem 'uglifier'
 
 gem 'turbolinks'
@@ -14,7 +17,11 @@ gem 'turbolinks'
 gem 'jbuilder'
 
 gem 'therubyracer'
+
+gem 'less-rails'
 gem 'twitter-bootstrap-rails'
+
+gem 'font-awesome-rails'
 
 gem 'bootstrap_sb_admin_base_v2'
 
