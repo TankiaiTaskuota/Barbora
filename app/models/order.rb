@@ -1,14 +1,14 @@
 class Order < ApplicationRecord
-
   has_many :items, dependent: :destroy
 
+  DATA_CONDITION = "created_at >= ? AND created_at < ?"
 
-  scope :today, -> {where("created_at >= ? AND created_at < ?", Time.now.beginning_of_day, Time.now.end_of_day)}
-  scope :yesterday, -> {where("created_at >= ? AND created_at < ?", Time.now.ago(1.day).beginning_of_day, Time.now.ago(1.day).end_of_day)}
-  scope :this_month, -> {where("created_at >= ? AND created_at < ?", Time.now.beginning_of_month, Time.now.end_of_month)}
-  scope :previous_month, -> {where("created_at >= ? AND created_at < ?", Time.now.ago(1.month).beginning_of_month, Time.now.ago(1.month).end_of_month)}
-  scope :this_year, -> {where("created_at >= ? AND created_at < ?", Time.now.beginning_of_year, Time.now.end_of_year)}
-  scope :previous_year, -> {where("created_at >= ? AND created_at < ?", Time.now.ago(1.year).beginning_of_year, Time.now.ago(1.year).end_of_year)}
+  scope :today, -> { where(DATA_CONDITION, Time.now.beginning_of_day, Time.now.end_of_day) }
+  scope :yesterday, -> { where(DATA_CONDITION, Time.now.ago(1.day).beginning_of_day, Time.now.ago(1.day).end_of_day) }
+  scope :this_month, -> { where(DATA_CONDITION, Time.now.beginning_of_month, Time.now.end_of_month) }
+  scope :previous_month, -> { where(DATA_CONDITION, Time.now.ago(1.month).beginning_of_month, Time.now.ago(1.month).end_of_month) }
+  scope :this_year, -> { where(DATA_CONDITION, Time.now.beginning_of_year, Time.now.end_of_year)}
+  scope :previous_year, -> { where(DATA_CONDITION, Time.now.ago(1.year).beginning_of_year, Time.now.ago(1.year).end_of_year) }
 
   require 'csv'
 
@@ -22,7 +22,7 @@ class Order < ApplicationRecord
         item = Product.create(name: row['Prekės pavadinimas'], ean: row['EAN Kodas'])
       end
 
-      Item.create(order_id: self.id, product_id: item.id, price: row['Suma su nuolaida'], amount: row['Surinktas Kiekis'], full_price: row['Kaina (vnt/kg)'])
+      Item.create(order_id: id, product_id: item.id, price: row['Suma su nuolaida'], amount: row['Surinktas Kiekis'], full_price: row['Kaina (vnt/kg)'])
     end
   end
 
@@ -31,9 +31,9 @@ class Order < ApplicationRecord
   end
 
   def Order.self_pdf_import(file_path, order = nil)
-    t=Time.now.to_i
+    t = Time.now.to_i
     files = `pdftohtml -c #{file_path} /tmp/#{t}.html`
-    order = order == nil ? Order.check_file("/tmp/#{t}-1.html") : order
+    order = order.nil? ? Order.check_file("/tmp/#{t}-1.html") : order
     puts file_path
     if files.to_s.include?('Page-2')
       order.import_nikogiri("/tmp/#{t}-1.html", 1)
@@ -63,31 +63,31 @@ class Order < ApplicationRecord
     ps = html_doc.css('p')
 
     if version == 1
-      iean =44
-      iname=45
-      iqt =47
+      iean = 44
+      iname = 45
+      iqt = 47
       ifprice = 48
-      iprice =49
+      iprice = 49
     end
     if version == 2
-      iean =3
-      iname=4
-      iqt =6
+      iean = 3
+      iname = 4
+      iqt = 6
       ifprice = 7
-      iprice =8
+      iprice = 8
     end
 
-    ean=''
-    name= ''
-    qt=''
-    fprice=''
-    price=''
+    ean = ''
+    name = ''
+    qt = ''
+    fprice = ''
+    price = ''
 
-    nexti=0
-    depoz=0
-    stop=0
+    nexti = 0
+    depoz = 0
+    stop = 0
 
-    l=0
+    l = 0
     ps.each_with_index { |p, index|
       if version == 1
 
@@ -252,10 +252,6 @@ class Order < ApplicationRecord
         self.save
         stop =1
       end
-
-
     }
-
-
   end
 end
