@@ -2,10 +2,10 @@
 
 one:
   name: 
-  ean: MyString
+  ean: MyString2
   type_id: 1
 
 two:
-  name: 
-  ean: MyString
-  type_id: 1
+  name:
+  ean: MyString4
+  type_id: 2

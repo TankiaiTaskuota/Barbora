@@ -38,4 +38,5 @@ group :development do
   gem 'web-console'
 end
 
+gem 'pry'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

@@ -63,6 +63,7 @@ GEM
       jquery-rails
     builder (3.2.4)
     byebug (11.1.1)
+    coderay (1.1.2)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
       railties (>= 5.2.0)
@@ -118,6 +119,9 @@ GEM
     parser (2.7.0.2)
       ast (~> 2.4.0)
     pg (1.2.2)
+    pry (0.12.2)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
     puma (4.3.1)
       nio4r (~> 2.0)
     rack (2.2.2)
@@ -228,6 +232,7 @@ DEPENDENCIES
   less-rails
   listen
   pg
+  pry
   puma
   rails
   rubocop

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
@@ -7,4 +9,10 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  def read_file(name)
+    filepath = "#{Rails.root}/test/fixtures/files/#{name}"
+
+    File.read(filepath)
+  end
 end

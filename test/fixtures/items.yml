@@ -8,8 +8,8 @@ one:
   full_price: 9.99
 
 two:
-  product_id: 1
-  order_id: 1
-  price: 9.99
-  amount: 9.99
-  full_price: 9.99
+  product_id: 2
+  order_id: 2
+  price: 1
+  amount: 2
+  full_price: 3

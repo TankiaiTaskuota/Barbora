@@ -10,8 +10,8 @@ one:
 
 two:
   currency: MyString
-  price: 9.99
-  discount: 9.99
-  depozit: 9.99
-  'no': MyString
-  maxima: 9.99
+  price: 10.99
+  discount: 0.99
+  depozit: 1.99
+  'no': MyString2
+  maxima: 7.99
