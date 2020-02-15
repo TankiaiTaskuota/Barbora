@@ -5,9 +5,8 @@ class OrdersController < ApplicationController
   # GET /orders.json
   def index
     @orders = Order.order('created_at desc').all
-    @this_month = Order.this_month
-    @preveus_month = Order.previous_month
-
+    @this_month = Order.this_month || Order.nil
+    @preveus_month = Order.previous_month || Order.nil
   end
 
   # GET /orders/1
