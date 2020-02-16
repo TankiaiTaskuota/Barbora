@@ -3,7 +3,7 @@
 class Order < ApplicationRecord
   has_many :items, dependent: :destroy
 
-  DATA_CONDITION = "created_at >= ? AND created_at < ?"
+  DATA_CONDITION = 'created_at >= ? AND created_at < ?'
 
   scope :today, -> { where(DATA_CONDITION, Time.now.beginning_of_day, Time.now.end_of_day) }
   scope :yesterday, -> { where(DATA_CONDITION, Time.now.ago(1.day).beginning_of_day, Time.now.ago(1.day).end_of_day) }
@@ -17,12 +17,11 @@ class Order < ApplicationRecord
   def import(file)
     CSV.foreach(file.path, headers: true) do |row|
       items = Product.where(name: row['Prekės pavadinimas'], ean: row['EAN Kodas']).all
-      if items.count > 0
-        #pakesiti !!!!
-        item = items.first
-      else
-        item = Product.create(name: row['Prekės pavadinimas'], ean: row['EAN Kodas'])
-      end
+      item = if items.count.positive?
+             items.first
+             else
+             Product.create(name: row['Prekės pavadinimas'], ean: row['EAN Kodas'])
+             end
 
       Item.create(order_id: id, product_id: item.id, price: row['Suma su nuolaida'], amount: row['Surinktas Kiekis'], full_price: row['Kaina (vnt/kg)'])
     end
