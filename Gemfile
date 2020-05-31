@@ -26,9 +26,11 @@ gem 'font-awesome-rails'
 gem 'bootstrap_sb_admin_base_v2'
 
 group :development, :test do
+  gem 'pry'
   gem 'byebug', platform: :mri
   gem 'rubocop'
   gem 'rubocop-rspec'
+  gem 'factory_bot_rails'
   gem 'rspec-rails', '~> 4.0.0'
 end
 
