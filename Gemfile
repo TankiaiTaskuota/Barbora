@@ -1,6 +1,6 @@
-source 'https://rubygems.org'
+  source 'https://rubygems.org'
 
-gem 'rails'
+gem 'rails', '5.2.4.3'
 
 gem 'coffee-rails'
 gem 'sass-rails'
@@ -29,6 +29,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'rubocop'
   gem 'rubocop-rspec'
+  gem 'rspec-rails', '~> 4.0.0'
 end
 
 group :development do
