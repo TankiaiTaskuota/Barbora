@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :import do
   desc 'Import PDF files from DIR'
   task pdfimport: :environment do

@@ -1,24 +1,19 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "orders/show", type: :view do
+RSpec.describe 'orders/show', type: :view do
   before(:each) do
-    @order = assign(:order, Order.create!(
-      currency: "Currency",
-      price: "9.99",
-      discount: "9.99",
-      depozit: "",
-      no: "No",
-      maxima: "9.99"
-    ))
+    @order = assign(:order, create(:order))
   end
 
-  it "renders attributes in <p>" do
+  it 'renders attributes in <p>' do
     render
-    expect(rendered).to match(/Currency/)
-    expect(rendered).to match(/9.99/)
-    expect(rendered).to match(/9.99/)
-    expect(rendered).to match(//)
-    expect(rendered).to match(/No/)
-    expect(rendered).to match(/9.99/)
+    expect(rendered).to match(@order.currency)
+    expect(rendered).to match(@order.no)
+    expect(rendered).to match(/#{@order.discount}/)
+    expect(rendered).to match(/#{@order.depozit}/)
+    expect(rendered).to match(/#{@order.price}/)
+    expect(rendered).to match(/#{@order.maxima}/)
   end
 end

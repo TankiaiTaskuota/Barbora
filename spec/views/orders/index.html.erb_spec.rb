@@ -1,36 +1,25 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe "orders/index", type: :view do
+RSpec.describe 'orders/index', type: :view do
+  let(:order) { create(:order) }
+  let(:order_another) { create(:order, :second) }
+
   before(:each) do
-    Order.create!(
-      currency: "Currency",
-      price: "1.99",
-      discount: "2.99",
-      depozit: "",
-      no: "No",
-      maxima: "3.99"
-    )
-    Order.create!(
-      currency: "Currency",
-      price: "1.99",
-      discount: "4.99",
-      depozit: "",
-      no: "No2",
-      maxima: "5.99"
-    )
+    order
+    order_another
     @orders = Order.all
     @this_month = @orders
     @preveus_month = @orders
   end
 
-  it "renders a list of orders" do
+  it 'renders a list of orders' do
     render
-    assert_select "tr>td", text: "Currency".to_s, count: 2
-    assert_select "tr>td", text: "1.99".to_s, count: 2
-    assert_select "tr>td", text: "2.99".to_s, count: 1
-    assert_select "tr>td", text: "".to_s, count: 2
-    assert_select "tr>td", text: "No".to_s, count: 1
-    assert_select "tr>td", text: "No2".to_s, count: 1
-    assert_select "tr>td", text: "5.99".to_s, count: 1
+    assert_select 'tr>td', text: 'Mycurrency'.to_s, count: 2
+    assert_select 'tr>td', text: order.price.to_s, count: 1
+    assert_select 'tr>td', text: order_another.price.to_s, count: 1
+    assert_select 'tr>td', text: order.no.to_s, count: 1
+    assert_select 'tr>td', text: order_another.no.to_s, count: 1
   end
 end

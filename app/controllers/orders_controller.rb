@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
 
