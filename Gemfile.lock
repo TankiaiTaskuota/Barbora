@@ -43,7 +43,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (9.0.0)
-    ast (2.4.0)
+    ast (2.4.1)
     bindex (0.8.1)
     bootstrap_sb_admin_base_v2 (0.3.6)
       font-awesome-rails
@@ -180,7 +180,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.0.3)
       parser (>= 2.7.0.1)
-    rubocop-rspec (1.39.0)
+    rubocop-rspec (1.40.0)
       rubocop (>= 0.68.1)
     ruby-progressbar (1.10.1)
     sass-rails (6.0.0)
