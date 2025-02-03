@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'items/new', type: :view do
   before(:each) do
-    assign(:item, build(:item))
+    assign(:item, FactoryBot.build(:item))
   end
 
   it 'renders new item form' do

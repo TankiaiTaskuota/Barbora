@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'items/edit', type: :view do
   before(:each) do
-    @item = assign(:item, create(:item))
+    @item = assign(:item, FactoryBot.create(:item))
   end
 
   it 'renders the edit item form' do

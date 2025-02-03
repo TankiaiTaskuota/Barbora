@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'orders/edit', type: :view do
   before(:each) do
-    @order = assign(:order, create(:order))
+    @order = assign(:order, FactoryBot.create(:order))
   end
 
   it 'renders the edit order form' do

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'orders/index', type: :view do
-  let(:order) { create(:order) }
-  let(:order_another) { create(:order, :second) }
+  let(:order) { FactoryBot.create(:order) }
+  let(:order_another) { FactoryBot.create(:order, :second) }
 
   before(:each) do
     order
