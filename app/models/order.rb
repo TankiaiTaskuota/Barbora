@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'csv'
 
 class Order < ApplicationRecord
   has_many :items, dependent: :destroy
@@ -11,8 +12,6 @@ class Order < ApplicationRecord
   scope :previous_month, -> { where(DATA_CONDITION, Time.now.ago(1.month).beginning_of_month, Time.now.ago(1.month).end_of_month) }
   scope :this_year, -> { where(DATA_CONDITION, Time.now.beginning_of_year, Time.now.end_of_year)}
   scope :previous_year, -> { where(DATA_CONDITION, Time.now.ago(1.year).beginning_of_year, Time.now.ago(1.year).end_of_year) }
-
-  require 'csv'
 
   def import(file)
     CSV.foreach(file.path, headers: true) do |row|

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'items/index', type: :view do
-  let(:item) { create(:item) }
-  let(:item_second) { create(:item, :second) }
+  let(:item) { FactoryBot.create(:item) }
+  let(:item_second) { FactoryBot.create(:item, :second) }
 
   before(:each) do
     assign(:items, [item, item_second])

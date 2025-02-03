@@ -1,6 +1,6 @@
   source 'https://rubygems.org'
 
-gem 'rails', '5.2.4.3'
+gem 'rails', '7.2.2.1'
 
 gem 'coffee-rails'
 gem 'sass-rails'
@@ -25,13 +25,15 @@ gem 'font-awesome-rails'
 
 gem 'bootstrap_sb_admin_base_v2'
 
+gem "csv"
+
 group :development, :test do
   gem 'pry'
   gem 'byebug', platform: :mri
   gem 'rubocop'
   gem 'rubocop-rspec'
   gem 'factory_bot_rails'
-  gem 'rspec-rails', '~> 4.0.0'
+  gem 'rspec-rails'
 end
 
 group :development do

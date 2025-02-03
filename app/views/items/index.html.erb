@@ -52,8 +52,8 @@
   Morris.Area({
     element: 'area-example',
     data: [
-      <% for item in @items%>
-      { y: '<%=item.created_at.to_s(:db)%>', a: <%=item.full_price%>},
+      <% @items.each do |item|%>
+      { y: '<%= item.created_at.to_s %>', a: <%= item.full_price %>},
       <% end %>
     ],
     xkey: 'y',

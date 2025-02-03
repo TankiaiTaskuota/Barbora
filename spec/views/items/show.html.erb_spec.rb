@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'items/show', type: :view do
-  let(:item) { create(:item) }
+  let(:item) { FactoryBot.create(:item) }
 
   before(:each) do
     @item = assign(:item, item)
