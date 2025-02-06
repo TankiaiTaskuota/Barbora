@@ -1,48 +1,25 @@
-<%= form_for @product, :html => { :class => "form-horizontal product" } do |f| %>
-
-  <% if @product.errors.any? %>
-    <div id="error_expl" class="panel panel-danger">
-      <div class="panel-heading">
-        <h3 class="panel-title"><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h3>
-      </div>
-      <div class="panel-body">
-        <ul>
-        <% @product.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-        </ul>
-      </div>
+<%= form_for @product do |f| %>
+  <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">name</span>
+    <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 ">
+      <%= f.text_field :name, class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" , placeholder: "EUR" %>
     </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= f.label :name, :class => 'control-label col-lg-2' %>
-    <div class="col-lg-10">
-      <%= f.text_field :name, :class => 'form-control' %>
+  </label>
+  <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">ean</span>
+    <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 ">
+      <%= f.text_field :ean, class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" , placeholder: "EUR" %>
     </div>
-    <%=f.error_span(:name) %>
-  </div>
-  <div class="form-group">
-    <%= f.label :ean, :class => 'control-label col-lg-2' %>
-    <div class="col-lg-10">
-      <%= f.text_field :ean, :class => 'form-control' %>
+  </label>
+  <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">type_id</span>
+    <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 ">
+      <%= f.text_field :type_id, class: "block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" , placeholder: "EUR" %>
     </div>
-    <%=f.error_span(:ean) %>
-  </div>
-  <div class="form-group">
-    <%= f.label :type_id, :class => 'control-label col-lg-2' %>
-    <div class="col-lg-10">
-      <%= f.text_field :type_id, :class => 'form-control' %>
-    </div>
-    <%=f.error_span(:type_id) %>
-  </div>
-
-  <div class="form-group">
-    <div class="col-lg-offset-2 col-lg-10">
-      <%= f.submit nil, :class => 'btn btn-primary' %>
-      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-                products_path, :class => 'btn btn-default' %>
-    </div>
-  </div>
-
+  </label>
+  <label class="block text-sm">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+              products_path, :class => 'btn btn-default' %>
+  </label>
 <% end %>

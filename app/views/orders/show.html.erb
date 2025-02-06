@@ -1,29 +1,44 @@
-<%- model_class = Order -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+  Order
+</h2>
+<h3 class=" font-semibold text-gray-900">#<%=@order.id%></h3>
+
+<div class="px-4 sm:px-0">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+                orders_path, :class => 'btn btn-default'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                edit_order_path(@order), :class => 'btn btn-default' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                order_path(@order),
+                :method => 'delete',
+                :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                :class => 'btn btn-danger' %>
 </div>
-
-<dl class="dl-horizontal">
-  <dt><strong><%= model_class.human_attribute_name(:currency) %>:</strong></dt>
-  <dd><%= @order.currency %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:price) %>:</strong></dt>
-  <dd><%= @order.price %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:discount) %>:</strong></dt>
-  <dd><%= @order.discount %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:depozit) %>:</strong></dt>
-  <dd><%= @order.depozit %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:no) %>:</strong></dt>
-  <dd><%= @order.no %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:maxima) %>:</strong></dt>
-  <dd><%= @order.maxima %></dd>
-</dl>
-
-<%= link_to t('.back', :default => t("helpers.links.back")),
-              orders_path, :class => 'btn btn-default'  %>
-<%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_order_path(@order), :class => 'btn btn-default' %>
-<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-              order_path(@order),
-              :method => 'delete',
-              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-              :class => 'btn btn-danger' %>
+<div class="mt-6 border-t border-gray-100">
+  <dl class="divide-y divide-gray-100">
+    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+      <dt class="text-sm/6 font-medium text-gray-900">Currency</dt>
+      <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%=@order.currency%></dd>
+    </div>
+    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+      <dt class="text-sm/6 font-medium text-gray-900">Price</dt>
+      <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%=@order.price%></dd>
+    </div>
+    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+      <dt class="text-sm/6 font-medium text-gray-900">Discount</dt>
+      <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%=@order.discount%></dd>
+    </div>
+    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+      <dt class="text-sm/6 font-medium text-gray-900">Depozit</dt>
+      <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%=@order.depozit%></dd>
+    </div>
+    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+      <dt class="text-sm/6 font-medium text-gray-900">No</dt>
+      <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%=@order.depozit%></dd>
+    </div>
+    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+      <dt class="text-sm/6 font-medium text-gray-900">Maxima</dt>
+      <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0"><%=@order.maxima%></dd>
+    </div>
+  </dl>
+</div>
