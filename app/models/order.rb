@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'csv'
+
+require "csv"
 
 class Order < ApplicationRecord
   has_many :items, dependent: :destroy
@@ -10,20 +11,20 @@ class Order < ApplicationRecord
   scope :yesterday, -> { where(DATA_CONDITION, Time.now.ago(1.day).beginning_of_day, Time.now.ago(1.day).end_of_day) }
   scope :this_month, -> { where(DATA_CONDITION, Time.now.beginning_of_month, Time.now.end_of_month) }
   scope :previous_month, -> { where(DATA_CONDITION, Time.now.ago(1.month).beginning_of_month, Time.now.ago(1.month).end_of_month) }
-  scope :this_year, -> { where(DATA_CONDITION, Time.now.beginning_of_year, Time.now.end_of_year)}
+  scope :this_year, -> { where(DATA_CONDITION, Time.now.beginning_of_year, Time.now.end_of_year) }
   scope :previous_year, -> { where(DATA_CONDITION, Time.now.ago(1.year).beginning_of_year, Time.now.ago(1.year).end_of_year) }
 
   def import(file)
     CSV.foreach(file.path, headers: true) do |row|
-      items = Product.where(name: row['Prekės pavadinimas'], ean: row['EAN Kodas']).all
+      items = Product.where(name: row["Prekės pavadinimas"], ean: row["EAN Kodas"]).all
       if items.count > 0
-        #pakesiti !!!!
+        # pakesiti !!!!
         item = items.first
       else
-        item = Product.create(name: row['Prekės pavadinimas'], ean: row['EAN Kodas'])
+        item = Product.create(name: row["Prekės pavadinimas"], ean: row["EAN Kodas"])
       end
 
-      Item.create(order_id: id, product_id: item.id, price: row['Suma su nuolaida'], amount: row['Surinktas Kiekis'], full_price: row['Kaina (vnt/kg)'])
+      Item.create(order_id: id, product_id: item.id, price: row["Suma su nuolaida"], amount: row["Surinktas Kiekis"], full_price: row["Kaina (vnt/kg)"])
     end
   end
 
@@ -36,32 +37,31 @@ class Order < ApplicationRecord
     files = `pdftohtml -c #{file_path} /tmp/#{t}.html`
     order = order.nil? ? Order.check_file("/tmp/#{t}-1.html") : order
     puts file_path
-    if files.to_s.include?('Page-2')
+    if files.to_s.include?("Page-2")
       order.import_nikogiri("/tmp/#{t}-1.html", 1)
       order.import_nikogiri("/tmp/#{t}-2.html", 2)
     else
       order.import_nikogiri("/tmp/#{t}-1.html")
     end
 
-   # `rm -rf /tmp/#{t}*`
+    # `rm -rf /tmp/#{t}*`
   end
 
   def Order.check_file(file_path)
     html_doc = File.open(file_path) { |f| Nokogiri::HTML(f) }
-    ps = html_doc.css('p')
-    ino=''
+    ps = html_doc.css("p")
+    ino=""
     ps.each_with_index { |p, index|
-
-      if p.text.to_s.include?('UŽSAKYMO Nr.')
+      if p.text.to_s.include?("UŽSAKYMO Nr.")
         ino=index
       end
     }
-    Order.find_or_create_by(no: ps[ino].text.to_s.split('Nr.').last.to_s.strip)
+    Order.find_or_create_by(no: ps[ino].text.to_s.split("Nr.").last.to_s.strip)
   end
 
-  def import_nikogiri(file_path, version=1)
+  def import_nikogiri(file_path, version = 1)
     html_doc = File.open(file_path) { |f| Nokogiri::HTML(f) }
-    ps = html_doc.css('p')
+    ps = html_doc.css("p")
 
     if version == 1
       iean = 44
@@ -78,11 +78,11 @@ class Order < ApplicationRecord
       iprice = 8
     end
 
-    ean = ''
-    name = ''
-    qt = ''
-    fprice = ''
-    price = ''
+    ean = ""
+    name = ""
+    qt = ""
+    fprice = ""
+    price = ""
 
     nexti = 0
     depoz = 0
@@ -92,21 +92,21 @@ class Order < ApplicationRecord
     ps.each_with_index { |p, index|
       if version == 1
 
-        if p.text.to_s.include?('UŽSAKYMO Nr.')
-          self.no = p.text.to_s.split('Nr.').last.to_s.strip
+        if p.text.to_s.include?("UŽSAKYMO Nr.")
+          self.no = p.text.to_s.split("Nr.").last.to_s.strip
           self.save
         end
         if l == 1
-          self.created_at = p.text.to_s.split('/').first.to_s.delete('DATA')
+          self.created_at = p.text.to_s.split("/").first.to_s.delete("DATA")
           self.save
           l=0
         end
-        if p.text.to_s.include?('Prekių pristatymo data ir laikas')
+        if p.text.to_s.include?("Prekių pristatymo data ir laikas")
           l =1
         end
       end
       if version == 2
-        if p.text.to_s.include?('Jums priklauso')
+        if p.text.to_s.include?("Jums priklauso")
 
           iean =index+2
           iname=index+3
@@ -119,27 +119,27 @@ class Order < ApplicationRecord
       end
 
       if depoz == 1
-        if p.text.to_s.include?('Lt')
-          self.depozit=p.text.to_s.delete('Lt').gsub(',', '.').to_d * 0.289620019
+        if p.text.to_s.include?("Lt")
+          self.depozit=p.text.to_s.delete("Lt").gsub(",", ".").to_d * 0.289620019
         else
-          self.depozit = p.text.to_s.delete(' €').gsub(',', '.')
+          self.depozit = p.text.to_s.delete(" €").gsub(",", ".")
         end
         self.save
         depoz=0
       end
 
       if nexti == 1
-        if p.text.to_s.include?('Lt')
-          self.price=p.text.to_s.delete('Lt').gsub(',', '.').to_d * 0.289620019
+        if p.text.to_s.include?("Lt")
+          self.price=p.text.to_s.delete("Lt").gsub(",", ".").to_d * 0.289620019
         else
-          self.price = p.text.to_s.delete(' €').gsub(',', '.')
+          self.price = p.text.to_s.delete(" €").gsub(",", ".")
         end
 
         self.save
         nexti=0
       end
 
-      if p.text.to_s.include?('EAN Kodas')
+      if p.text.to_s.include?("EAN Kodas")
 
         iean =index+11
         iname=index+12
@@ -148,18 +148,18 @@ class Order < ApplicationRecord
         iprice =index+16
 
       end
-      #table +-18
-      if p.text.to_s.include?('Apmokestinama') or p.text.to_s.include?('Pristatymo mokestis') or p.text.to_s.include?('Suma be PVM') or p.text.to_s.include?('SumabePVM') or p.text.to_s.include?('Prekes pristačiau:')
+      # table +-18
+      if p.text.to_s.include?("Apmokestinama") or p.text.to_s.include?("Pristatymo mokestis") or p.text.to_s.include?("Suma be PVM") or p.text.to_s.include?("SumabePVM") or p.text.to_s.include?("Prekes pristačiau:")
         stop =1
       end
 
       if stop == 0
         if iean == index
           i=0
-          #numeris
+          # numeris
 
           ean=p.text.to_s
-          if ean.to_s[-1, 1].include?(',')
+          if ean.to_s[-1, 1].include?(",")
             iean+=1
             iname+=1
             iqt+=1
@@ -169,31 +169,31 @@ class Order < ApplicationRecord
           else
             iean +=7
           end
-          name= ''
-          qt=''
-          fprice=''
-          price=''
+          name= ""
+          qt=""
+          fprice=""
+          price=""
           # logger.debug "ean: #{ean}--- index:#{index}--- iean:#{iean}"
         end
         if iname == index
-          #numeris
+          # numeris
           iname +=7
           name = p.text.to_s
         end
         if iqt == index
-          #numeris
+          # numeris
           iqt +=7
-          qt = p.text.to_s.delete(' €')
+          qt = p.text.to_s.delete(" €")
         end
         if ifprice == index
-          #numeris
+          # numeris
           ifprice +=7
-          fprice = p.text.to_s.delete(' €')
+          fprice = p.text.to_s.delete(" €")
         end
         if iprice == index
-          #numeris
+          # numeris
           iprice +=7
-          price = p.text.to_s.delete(' €')
+          price = p.text.to_s.delete(" €")
 
           i=1
         end
@@ -202,25 +202,25 @@ class Order < ApplicationRecord
         if i == 1
           items = Product.where(name: name, ean: ean).all
           if items.count > 0
-            #pakesiti !!!!
+            # pakesiti !!!!
             item = items.first
           else
             item = Product.create(name: name, ean: ean)
           end
-          if price.include?('Lt') or fprice.include?('Lt')
-            price = price.delete('Lt').gsub(',', '.').to_d * 0.289620019
-            fprice = fprice.delete('Lt').gsub(',', '.').to_d * 0.289620019
+          if price.include?("Lt") or fprice.include?("Lt")
+            price = price.delete("Lt").gsub(",", ".").to_d * 0.289620019
+            fprice = fprice.delete("Lt").gsub(",", ".").to_d * 0.289620019
           else
-            price = price.gsub(',', '.')
-            fprice = fprice.gsub(',', '.')
+            price = price.gsub(",", ".")
+            fprice = fprice.gsub(",", ".")
           end
-         # puts price
-          #puts fprice
-          #puts index
-          #puts '-------------------'
-          it = Item.where(order_id: self.id, product_id: item.id, price: price, amount: qt.delete('vnt.').delete('kg').gsub(',', '.').to_d, full_price: fprice, created_at: self.created_at).first
+          # puts price
+          # puts fprice
+          # puts index
+          # puts '-------------------'
+          it = Item.where(order_id: self.id, product_id: item.id, price: price, amount: qt.delete("vnt.").delete("kg").gsub(",", ".").to_d, full_price: fprice, created_at: self.created_at).first
           if !it
-            Item.create(order_id: self.id, product_id: item.id, price: price, amount: qt.delete('vnt.').delete('kg').gsub(',', '.'), full_price: fprice, created_at: self.created_at)
+            Item.create(order_id: self.id, product_id: item.id, price: price, amount: qt.delete("vnt.").delete("kg").gsub(",", "."), full_price: fprice, created_at: self.created_at)
           end
         end
 
@@ -228,28 +228,28 @@ class Order < ApplicationRecord
       end
 
 
-      if p.text.to_s.include?('Depozitas')
+      if p.text.to_s.include?("Depozitas")
         depoz=1
         stop =1
       end
-      if p.text.to_s.include?('Bendra suma') or p.text.to_s.include?('SUMA su PVM')
+      if p.text.to_s.include?("Bendra suma") or p.text.to_s.include?("SUMA su PVM")
         nexti=1
         stop =1
       end
 
-      if p.text.to_s.include?('Su AČIŪ kortele suteikta nuolaida') and index > 0
-        self.discount = p.text.to_s.delete('Su AČIŪ kortele suteikta nuolaida').delete(' €').gsub(',', '.')
+      if p.text.to_s.include?("Su AČIŪ kortele suteikta nuolaida") and index > 0
+        self.discount = p.text.to_s.delete("Su AČIŪ kortele suteikta nuolaida").delete(" €").gsub(",", ".")
         self.save
         stop =1
       end
 
-      if p.text.to_s.include?('Prekespristačiau:') and index > 0
+      if p.text.to_s.include?("Prekespristačiau:") and index > 0
         self.save
         stop =1
       end
 
-      if p.text.to_s.include?('Gauta MAXIMA pinigų už šį pirkinį') and index > 0
-        self.maxima = p.text.to_s.delete('Gauta MAXIMA pinigų už šį pirkinį').delete(' €').gsub(',', '.')
+      if p.text.to_s.include?("Gauta MAXIMA pinigų už šį pirkinį") and index > 0
+        self.maxima = p.text.to_s.delete("Gauta MAXIMA pinigų už šį pirkinį").delete(" €").gsub(",", ".")
         self.save
         stop =1
       end

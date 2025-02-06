@@ -7,7 +7,7 @@ RSpec.describe 'orders/show', type: :view do
     @order = assign(:order, FactoryBot.create(:order))
   end
 
-  it 'renders attributes in <p>' do
+  it 'renders attributes' do
     render
     expect(rendered).to match(@order.currency)
     expect(rendered).to match(@order.no)

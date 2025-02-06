@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'products/index', type: :view do
   before(:each) do
-    assign(:products, [Product.create!(name: 'Name', ean: 'Ean', type_id: 2),
-                       Product.create!(name: 'Name', ean: 'Eanii', type_id: 2)])
+    assign(:products, [ Product.create!(name: 'Name', ean: 'Ean', type_id: 2),
+                       Product.create!(name: 'Name', ean: 'Eanii', type_id: 2) ])
   end
 
   it 'renders a list of products' do

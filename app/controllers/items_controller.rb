@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class ItemsController < ApplicationController
-  before_action :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :set_item, only: [ :show, :edit, :update, :destroy ]
 
   # GET /items
   # GET /items.json
   def index
-
     wh = []
 
     if params[:order_id] and !params[:order_id].to_s.blank?
@@ -16,7 +15,7 @@ class ItemsController < ApplicationController
       wh << "product_id = '#{params[:product_id]}'"
     end
 
-    @items = Item.where(wh.join(' AND ')).order('created_at desc').all
+    @items = Item.where(wh.join(" AND ")).order("created_at desc").all
   end
 
   # GET /items/1
@@ -40,7 +39,7 @@ class ItemsController < ApplicationController
 
     respond_to do |format|
       if @item.save
-        format.html { redirect_to @item, notice: 'Item was successfully created.' }
+        format.html { redirect_to @item, notice: "Item was successfully created." }
         format.json { render :show, status: :created, location: @item }
       else
         format.html { render :new }
@@ -54,7 +53,7 @@ class ItemsController < ApplicationController
   def update
     respond_to do |format|
       if @item.update(item_params)
-        format.html { redirect_to @item, notice: 'Item was successfully updated.' }
+        format.html { redirect_to @item, notice: "Item was successfully updated." }
         format.json { render :show, status: :ok, location: @item }
       else
         format.html { render :edit }
@@ -68,7 +67,7 @@ class ItemsController < ApplicationController
   def destroy
     @item.destroy
     respond_to do |format|
-      format.html { redirect_to items_url, notice: 'Item was successfully destroyed.' }
+      format.html { redirect_to items_url, notice: "Item was successfully destroyed." }
       format.json { head :no_content }
     end
   end

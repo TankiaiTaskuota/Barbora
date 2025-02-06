@@ -26,7 +26,7 @@
         <% @products.each do |product| %>
           <tr class="text-gray-700 dark:text-gray-400">
             <td class="px-4 py-3 text-sm"><%= link_to product.id, product_path(product) %></td>
-            <td class="px-4 py-3 text-sm"<%=  product.name %></td>
+            <td class="px-4 py-3 text-sm"><%=  product.name %></td>
             <td class="px-4 py-3 text-sm"><%= product.ean %></td>
             <td class="px-4 py-3 text-sm"><%= product.type_id %></td>
             <td class="px-4 py-3 text-sm"><%= product.created_at %></td>
