@@ -1,0 +1,28 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "d8faea3101ba6f34ed153b7cd5ee99192b49b886623076aa3b6f3c03a1e76e5d",
+      "check_name": "Execute",
+      "message": "Possible command injection",
+      "file": "app/models/order.rb",
+      "line": 37,
+      "link": "https://brakemanscanner.org/docs/warning_types/command_injection/",
+      "code": "`pdftohtml -c #{file_path} /tmp/#{Time.now.to_i}.html`",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Order",
+        "method": "Order.self_pdf_import"
+      },
+      "user_input": "file_path",
+      "confidence": "Medium",
+      "cwe_id": [
+        77
+      ],
+      "note": ""
+    }
+  ],
+  "brakeman_version": "7.0.0"
+}

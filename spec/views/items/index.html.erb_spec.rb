@@ -7,7 +7,7 @@ RSpec.describe 'items/index', type: :view do
   let(:item_second) { FactoryBot.create(:item, :second) }
 
   before(:each) do
-    assign(:items, [item, item_second])
+    assign(:items, [ item, item_second ])
   end
 
   it 'renders a list of items' do

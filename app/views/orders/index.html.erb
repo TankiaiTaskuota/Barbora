@@ -1,66 +1,59 @@
-<%- model_class = Order -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %> </h1>
-  <h2>Total : <%=@orders.calculate(:sum, :price)%> € | <%=@orders.count%></h2>
-  <h3>This month: <%=@this_month.calculate(:sum, :price)%> € | <%=@this_month.count%></h3>
-  <h3>Previous month: <%=@preveus_month.calculate(:sum, :price)%> € | <%=@preveus_month.count%></h3>
+<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+  Orders
+</h2>
+
+<%= link_to "New", new_order_path %>
+
+<div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+  <%= render "shared/card", card_name: "Total", card_text: "#{@orders.calculate(:sum, :price)} € | #{@orders.count}" %>
+  <%= render "shared/card", card_name: "This month", card_text: "#{@this_month.calculate(:sum, :price)} € | #{@this_month.count}" %>
+  <%= render "shared/card", card_name: "Previous month", card_text: "#{@preveus_month.calculate(:sum, :price)} € | #{@preveus_month.count}" %>
 </div>
 
+<div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+  <div class="w-full overflow-x-auto">
+    <table class="w-full whitespace-no-wrap">
+      <thead>
+        <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+          <th class="px-4 py-3">ID</th>
+          <th class="px-4 py-3">Currency</th>
+          <th class="px-4 py-3">Price</th>
+          <th class="px-4 py-3">Discount</th>
+          <th class="px-4 py-3">Depozit</th>
+          <th class="px-4 py-3">No</th>
+          <th class="px-4 py-3">Maxima</th>
+          <th class="px-4 py-3">Date</th>
+          <th class="px-4 py-3">items</th>
+          <th class="px-4 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+        <% @orders.each do |order| %>
+          <tr class="text-gray-700 dark:text-gray-400">
+            <td class="px-4 py-3 text-sm"><%= link_to order.id, order_path(order) %></td>
+            <td class="px-4 py-3 text-sm"><%= order.currency %></td>
+            <td class="px-4 py-3 text-sm"><%= order.price %></td>
+            <td class="px-4 py-3 text-sm"><%= order.discount %></td>
+            <td class="px-4 py-3 text-sm"><%= order.depozit %></td>
+            <td class="px-4 py-3 text-sm"><%= order.no %></td>
+            <td class="px-4 py-3 text-sm"><%= order.maxima %></td>
+            <td class="px-4 py-3 text-sm"><%=l order.created_at %></td>
+            <td class="px-4 py-3 text-sm"><%= link_to order.items.count, items_path(:order_id=>order.id) %></td>
+            <td class="px-4 py-3 text-sm">
+              <div class="flex items-center space-x-4 text-sm">
+                <%= link_to "Edit",
+                            edit_order_path(order), :class => "flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" %>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th><%= model_class.human_attribute_name(:id) %></th>
-      <th><%= model_class.human_attribute_name(:currency) %></th>
-      <th><%= model_class.human_attribute_name(:price) %>€</th>
-      <th><%= model_class.human_attribute_name(:discount) %>€</th>
-      <th><%= model_class.human_attribute_name(:depozit) %>€</th>
-      <th><%= model_class.human_attribute_name(:no) %></th>
-      <th><%= model_class.human_attribute_name(:maxima) %>€</th>
-      <th><%= model_class.human_attribute_name(:created_at) %></th>
-      <th><%= model_class.human_attribute_name(:items) %></th>
-      <th><%=t '.actions', :default => t("helpers.actions") %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @orders.each do |order| %>
-      <tr>
-        <td><%= link_to order.id, order_path(order) %></td>
-        <td><%= order.currency %></td>
-        <td><%= order.price %></td>
-        <td><%= order.discount %></td>
-        <td><%= order.depozit %></td>
-        <td><%= order.no %></td>
-        <td><%= order.maxima %></td>
-        <td><%=l order.created_at %></td>
-        <td><%= link_to order.items.count, items_path(:order_id=>order.id) %></td>
-        <td>
-          <%= link_to t('.edit', :default => t("helpers.links.edit")),
-                      edit_order_path(order), :class => 'btn btn-default btn-xs' %>
-          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-                      order_path(order),
-                      :method => :delete,
-                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-                      :class => 'btn btn-xs btn-danger' %>
-        </td>
-      </tr>
-    <% end %>
-
-    <tr>
-      <th>Total</th>
-      <th></th>
-      <th><%=@orders.calculate(:sum, :price)%> €</th>
-      <th><%=@orders.calculate(:sum, :discount) %>€</th>
-      <th><%=@orders.calculate(:sum, :depozit) %>€</th>
-      <th></th>
-      <th><%=@orders.calculate(:sum, :maxima) %>€</th>
-      <th></th>
-      <th>></th>
-      <th></th>
-    </tr>
-  </tbody>
-</table>
-
-<%= link_to t('.new', :default => t("helpers.links.new")),
-            new_order_path,
-            :class => 'btn btn-primary' %>
+                            <%= link_to "Destroy",
+                                        order_path(order),
+                                        :method => :delete,
+                                        :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                                        :class => "flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

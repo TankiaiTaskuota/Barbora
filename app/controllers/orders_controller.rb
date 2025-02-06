@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: [ :show, :edit, :update, :destroy ]
 
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.order('created_at desc').all
+    @orders = Order.order("created_at desc").all
     @this_month = Order.this_month
     @preveus_month = Order.previous_month
-
   end
 
   # GET /orders/1
@@ -35,11 +34,11 @@ class OrdersController < ApplicationController
 
     respond_to do |format|
       if @order.save
-      #@order.import(params[:order][:file])
+      # @order.import(params[:order][:file])
       @order.self_pdf_import(params[:order][:file])
 
 
-        format.html { redirect_to @order, notice: 'Order was successfully created.' }
+        format.html { redirect_to @order, notice: "Order was successfully created." }
         format.json { render :show, status: :created, location: @order }
       else
         format.html { render :new }
@@ -54,7 +53,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
       if @order.update(order_params)
         @order.self_pdf_import(params[:order][:file])
-        format.html { redirect_to @order, notice: 'Order was successfully updated.' }
+        format.html { redirect_to @order, notice: "Order was successfully updated." }
         format.json { render :show, status: :ok, location: @order }
       else
         format.html { render :edit }
@@ -68,7 +67,7 @@ class OrdersController < ApplicationController
   def destroy
     @order.destroy
     respond_to do |format|
-      format.html { redirect_to orders_url, notice: 'Order was successfully destroyed.' }
+      format.html { redirect_to orders_url, notice: "Order was successfully destroyed." }
       format.json { head :no_content }
     end
   end
