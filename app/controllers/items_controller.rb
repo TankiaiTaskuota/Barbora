@@ -6,16 +6,16 @@ class ItemsController < ApplicationController
   # GET /items
   # GET /items.json
   def index
-    wh = []
+    wh = {}
 
     if params[:order_id] and !params[:order_id].to_s.blank?
-      wh << "order_id = '#{params[:order_id]}'"
+      wh[:order_id] = params[:order_id]
     end
     if params[:product_id] and !params[:product_id].to_s.blank?
-      wh << "product_id = '#{params[:product_id]}'"
+      wh[:product_id] = params[:product_id]
     end
 
-    @items = Item.where(wh.join(" AND ")).order("created_at desc").all
+    @items = Item.where(wh).order("created_at desc").all
   end
 
   # GET /items/1
